@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "inbox",
+  "compatibility_date": "2025-11-28",
+  "main": "./app/server.ts",
+  "observability": {
+    "enabled": true
+  },
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "DOMAINS": "example.com",
+    "EMAIL_ADDRESSES": []
+  },
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "inbox",
+      "preview_bucket_name": "inbox"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MAILBOX",
+        "class_name": "MailboxDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["MailboxDO"]
+    }
+  ]
+}

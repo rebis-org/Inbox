@@ -1,0 +1,11 @@
+allowBuilds:
+  esbuild: true
+  fsevents: true
+  unrs-resolver: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - '@cloudflare/vite-plugin@1.51.2'
+  - '@cloudflare/workers-types@5.20260811.1'
+  - miniflare@5.20260804.0-alpha
+  - resend@6.19.0
+  - wrangler@4.120.1

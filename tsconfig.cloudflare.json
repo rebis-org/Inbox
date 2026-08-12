@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "jsx": "react-jsx",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "rootDirs": ["."],
+    "types": ["vite/client", "@cloudflare/workers-types/experimental"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": false
+  },
+  "include": [
+    "app/**/*",
+    "app/**/.server/**/*",
+    "app/**/.client/**/*",
+    "workers/**/*",
+    "shared/**/*",
+    "worker-configuration.d.ts"
+  ]
+}

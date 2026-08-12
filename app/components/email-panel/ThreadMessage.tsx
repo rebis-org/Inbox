@@ -1,0 +1,211 @@
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CodeIcon,
+  PencilIcon,
+  SendIcon,
+  Trash2Icon
+} from 'lucide-react';
+import { formatDetailDate, formatShortDate } from 'shared/dates';
+import EmailAttachmentList from '~/components/EmailAttachmentList';
+import EmailIframe from '~/components/EmailIframe';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { Spinner } from '~/components/ui/spinner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip';
+import { rewriteInlineImages } from '~/lib/attachments';
+import { stripHtml } from '~/lib/html';
+import type { Email } from '~/types';
+
+interface ThreadMessageProps {
+  email: Email,
+  mailboxId?: string,
+  mailboxEmail?: string,
+  isLast: boolean,
+  isDraft?: boolean,
+  isSending?: boolean,
+  isExpanded: boolean,
+  onToggleExpand: () => void,
+  onSendDraft?: () => void,
+  onEditDraft?: () => void,
+  onDeleteDraft?: () => void,
+  onViewSource?: () => void,
+  onPreviewImage?: (url: string, filename: string) => void
+}
+
+function Avatar({
+  isDraft,
+  isSelf,
+  sender
+}: {
+  isDraft?: boolean,
+  isSelf: boolean,
+  sender: string
+}) {
+  return (
+    <div
+      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+        isDraft
+          ? 'bg-muted text-muted-foreground'
+          : (isSelf
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-muted text-foreground')
+      }`}
+    >
+      {isDraft ? 'D' : sender.charAt(0).toUpperCase()}
+    </div>
+  );
+}
+
+export default function ThreadMessage({
+  email,
+  mailboxId,
+  mailboxEmail,
+  isLast,
+  isDraft,
+  isSending,
+  isExpanded,
+  onToggleExpand,
+  onSendDraft,
+  onEditDraft,
+  onDeleteDraft,
+  onViewSource,
+  onPreviewImage
+}: ThreadMessageProps) {
+  const isSelf = email.sender === mailboxEmail;
+  const containerClassName = `${isLast ? '' : 'border-b border-border'} ${isDraft ? 'border-l-2 border-l-warning bg-warning/[0.02]' : ''}`;
+  const senderLabel = isDraft ? 'Draft reply' : (isSelf ? 'You' : email.sender);
+
+  if (!isExpanded) {
+    return (
+      <div className={containerClassName}>
+        <button
+          type="button"
+          onClick={onToggleExpand}
+          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl text-left"
+        >
+          <Avatar isDraft={isDraft} isSelf={isSelf} sender={email.sender} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-foreground truncate">{senderLabel}</span>
+              <span className="text-xs text-muted-foreground shrink-0">
+                {formatDetailDate(email.date)}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground truncate">
+              {stripHtml(email.body || '').slice(0, 80)}
+            </p>
+          </div>
+          <ChevronDownIcon size={16} className="text-muted-foreground shrink-0" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`group/thread-msg ${containerClassName}`}>
+      <div className="px-4 py-4 md:px-6">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <button
+              type="button"
+              onClick={onToggleExpand}
+              className="shrink-0"
+              aria-label="Collapse message"
+            >
+              <div className="cursor-pointer hover:ring-2 hover:ring-ring/30 transition-shadow rounded-full">
+                <Avatar isDraft={isDraft} isSelf={isSelf} sender={email.sender} />
+              </div>
+            </button>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-foreground truncate">{senderLabel}</span>
+                {isDraft && <Badge variant="outline">Draft</Badge>}
+              </div>
+              <div className="text-xs text-muted-foreground">To: {email.recipient}</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-xs text-muted-foreground">{formatShortDate(email.date)}</span>
+            {onViewSource && (
+              <Tooltip>
+                <TooltipTrigger render={
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={onViewSource}
+                    aria-label="View source"
+                  />
+                }
+                >
+                  <CodeIcon />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">View source</TooltipContent>
+              </Tooltip>
+            )}
+            <button
+              type="button"
+              onClick={onToggleExpand}
+              className="ml-1"
+              aria-label="Collapse message"
+            >
+              <ChevronUpIcon
+                size={16}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              />
+            </button>
+          </div>
+        </div>
+
+        <div className="md:ml-[42px]">
+          <EmailIframe
+            body={rewriteInlineImages(
+              email.body || '',
+              mailboxId || '',
+              email.id,
+              email.attachments
+            )}
+            autoSize
+          />
+        </div>
+
+        {isDraft && (onSendDraft || onEditDraft || onDeleteDraft) && (
+          <div className="flex gap-2 mt-3 md:ml-[42px]">
+            {onSendDraft && (
+              <Button variant="default" size="sm" onClick={onSendDraft} disabled={isSending}>
+                {isSending
+                  ? (
+                    <Spinner data-icon="inline-start" />
+                  )
+                  : (
+                    <SendIcon data-icon="inline-start" />
+                  )}
+                {isSending ? 'Sending...' : 'Send'}
+              </Button>
+            )}
+            {onEditDraft && (
+              <Button variant="secondary" size="sm" onClick={onEditDraft} disabled={isSending}>
+                <PencilIcon data-icon="inline-start" />
+                Edit
+              </Button>
+            )}
+            {onDeleteDraft && (
+              <Button variant="ghost" size="sm" onClick={onDeleteDraft} disabled={isSending}>
+                <Trash2Icon data-icon="inline-start" />
+                Discard
+              </Button>
+            )}
+          </div>
+        )}
+
+        <EmailAttachmentList
+          mailboxId={mailboxId}
+          emailId={email.id}
+          attachments={email.attachments}
+          onPreviewImage={onPreviewImage}
+          className="mt-3 md:ml-[42px]"
+        />
+      </div>
+    </div>
+  );
+}

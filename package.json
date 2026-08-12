@@ -1,0 +1,88 @@
+{
+  "name": "inbox",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "cloudflare": "wrangler types",
+    "deploy": "npm run build && wrangler deploy",
+    "dev": "vite dev",
+    "fmt": "eslint . --fix",
+    "lint": "eslint .",
+    "preview": "npm run build && vite preview",
+    "type": "npm run cloudflare && tsr generate && tsc -b"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.7.0",
+    "@fontsource-variable/noto-sans": "^5.3.0",
+    "@fontsource-variable/noto-sans-sc": "^5.3.0",
+    "@formisch/react": "^1.0.0-rc.0",
+    "@lexical/html": "^0.49.0",
+    "@lexical/link": "^0.49.0",
+    "@lexical/list": "^0.49.0",
+    "@lexical/react": "^0.49.0",
+    "@lexical/rich-text": "^0.49.0",
+    "@lexical/selection": "^0.49.0",
+    "@lexical/utils": "^0.49.0",
+    "@moeru/results": "0.1.0-beta.17",
+    "@moeru/std": "0.1.0-beta.20",
+    "@tanstack/react-query": "^5.101.4",
+    "@tanstack/react-router": "^1.170.25",
+    "@tanstack/react-start": "^1.168.42",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dompurify": "^3.4.13",
+    "drizzle-orm": "1.0.0-rc.4",
+    "foxact": "^0.3.8",
+    "foxts": "^5.9.1",
+    "jose": "^6.2.8",
+    "lemmih": "0.0.4",
+    "lexical": "^0.49.0",
+    "lucide-react": "^1.31.0",
+    "next-themes": "^0.4.6",
+    "postal-mime": "^2.7.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "resend": "^6.19.0",
+    "scule": "1.3.0",
+    "tailwind-merge": "^3.6.0",
+    "tw-animate-css": "^1.4.0",
+    "valibot": "^1.4.2",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.51.2",
+    "@cloudflare/workers-types": "^5.20260811.1",
+    "@eslint-sukka/node": "9.0.1",
+    "@eslint-sukka/react": "9.0.1",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/router-cli": "^1.167.27",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "@vitejs/plugin-react": "^5.2.0",
+    "eslint": "^10.8.1",
+    "eslint-config-sukka": "^9.0.1",
+    "eslint-plugin-import-x": "^4.17.1",
+    "shadcn": "^4.16.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "vite": "^8.2.1",
+    "wrangler": "^4.120.1"
+  },
+  "cloudflare": {
+    "label": "Inbox",
+    "products": [
+      "Workers",
+      "Durable Objects",
+      "R2"
+    ],
+    "bindings": {
+      "DOMAINS": {
+        "description": "Your domain with [Email Routing](https://developers.cloudflare.com/email-routing/) enabled (e.g. `example.com`). After deploying, create a catch-all Email Routing rule pointing to this Worker."
+      }
+    }
+  }
+}
