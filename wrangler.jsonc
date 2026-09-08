@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "inbox",
+  "compatibility_date": "2026-09-01",
+  "main": "./app/server.ts",
+  "observability": {
+    "enabled": true
+  },
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "DOMAINS": "rebis.cn",
+    "EMAIL_ADDRESSES": ["contact@rebis.cn", "support@rebis.cn"],
+    "POLICY_AUD": "4e629cea4eff131dc3ce739a07e7f981d526e7fe38a166a2f504f21cb23b37f6",
+    "TEAM_DOMAIN": "https://rebis-org.cloudflareaccess.com"
+  },
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "inbox",
+      "preview_bucket_name": "inbox-preview"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MAILBOX",
+        "class_name": "MailboxDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["MailboxDO"]
+    }
+  ],
+  "triggers": {
+    "crons": ["0 3 * * *"]
+  }
+}
