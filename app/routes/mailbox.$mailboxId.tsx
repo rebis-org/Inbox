@@ -42,7 +42,7 @@ function MailboxRoute() {
       )}
 
       <div
-        className={`fixed inset-y-0 left-0 z-40 transform transition-all duration-200 ease-in-out md:relative md:translate-x-0 md:z-0 ${
+        className={`fixed inset-y-0 left-0 z-40 transform transition-[transform] duration-200 ease-out md:relative md:translate-x-0 md:z-0 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } ${isSidebarCollapsed ? 'w-16' : 'w-64'}`}
       >
