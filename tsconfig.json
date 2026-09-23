@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./app/*"],
+      "shared/*": ["./shared/*"]
+    },
+    "types": ["./worker-configuration.d.ts"],
+    "checkJs": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.cloudflare.json" }],
+  "files": []
+}

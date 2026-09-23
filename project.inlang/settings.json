@@ -1,0 +1,12 @@
+{
+  "$schema": "https://inlang.com/schema/project-settings",
+  "baseLocale": "en",
+  "locales": ["en", "zh"],
+  "modules": [
+    "./project.inlang/vendor/plugin-message-format.js",
+    "./project.inlang/vendor/plugin-m-function-matcher.js"
+  ],
+  "plugin.inlang.messageFormat": {
+    "pathPattern": "./messages/{locale}.json"
+  }
+}
